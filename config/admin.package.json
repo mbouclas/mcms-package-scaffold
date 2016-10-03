@@ -1,0 +1,14 @@
+{
+  "name" : "Pages",
+  "package" : "package-pages",
+  "modules" : [
+    "mcms.pages"
+  ],
+  "files" : {
+    "js" : [
+      "package-pages/js/pages-compiled.js"
+    ],
+    "css" : [
+    ]
+  }
+}
