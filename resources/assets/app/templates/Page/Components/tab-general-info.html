@@ -1,0 +1,139 @@
+<md-content layout="column" flex="flex">
+    <div layout="" layout-xs="column">
+        <div flex="70" flex-xs="100" flex-sm="100">
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Title</label>
+                <input ng-model="VM.Item.title[VM.defaultLang]"
+                       required name="title"
+                       to-slug="VM.Item.slug">
+                <div ng-messages="ItemForm.title.$error">
+                    <ng-messages-include src="{{ VM.ValidationMessagesTemplate }}"></ng-messages-include>
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Permalink</label>
+                <input ng-model="VM.Item.slug" required name="slug">
+                <div ng-messages="ItemForm.slug.$error">
+                    <ng-messages-include src="{{ VM.ValidationMessagesTemplate }}"></ng-messages-include>
+                </div>
+            </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Description</label>
+                    <textarea ng-model="VM.Item.description[VM.defaultLang]"
+                              name="description"
+                              placeholder="Description" redactor></textarea>
+
+                </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Long Description</label>
+                <textarea ng-model="VM.Item.description_long[VM.defaultLang]" name="description_long"
+                          placeholder="Long Description"
+                          redactor></textarea>
+
+                </md-input-container>
+
+            <render-settings items="VM.Settings" ng-model="VM.Item.settings"></render-settings>
+            <div ng-show="VM.LayoutsObj[VM.Item.settings.Layout.id] && VM.LayoutsObj[VM.Item.settings.Layout.id].config">
+            <h2>Layout settings</h2>
+            <render-settings items="VM.LayoutsObj[VM.Item.settings.Layout.id].config"
+                             ng-model="VM.Item.settings.Layout"></render-settings>
+            </div>
+
+        </div><!-- eND LEFT -->
+        <div flex="30" flex-xs="100" layout-padding="">
+            <md-switch ng-model="VM.Item.active" aria-label="Active" ng-disabled="VM.disableStatus">
+                Status
+            </md-switch>
+
+            <md-button class="md-button md-primary md-raised" ng-if="VM.Item.id" ng-init="VM.setUser=false"
+                       ng-click="VM.setUser=!VM.setUser">Change page author</md-button>
+
+            <div ng-show="VM.setUser"><user-selector ng-model="VM.Item.user_id" show-current-user="true"></user-selector></div>
+
+            <div ng-if="VM.disableStatus">To be published on {{ VM.toBePublished | moment }}</div>
+            <md-button class="md-button md-primary md-raised" ng-if="VM.Item.id" ng-init="VM.future=false"
+                       ng-click="VM.future=!VM.future">Change Publish Date</md-button>
+
+            <div  ng-show="VM.future">
+
+                <md-input-container>
+                    <label>Publish on</label>
+                    <md-datepicker ng-model="VM.publish_at.date"></md-datepicker>
+                </md-input-container>
+                <div layout-gt-xs="row">
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Hour</label>
+                        <md-icon class="material-icons" style="display:inline-block;">access_time</md-icon>
+                        <input ng-model="VM.publish_at.hours" name="hours">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Minute</label>
+                        <input ng-model="VM.publish_at.minutes" name="minutes">
+                    </md-input-container>
+                </div>
+            </div>
+            <md-input-container class="md-block" flex-gt-sm>
+                <input required ng-model="VM.categoriesValid" name="categoriesValid"
+                       style="display: none;"
+                       aria-label="categoriesValid">
+                <div ng-messages="ItemForm.categoriesValid.$error">
+                    <div ng-message="required">* Please select a category</div>
+                </div>
+            </md-input-container>
+            <md-autocomplete
+                    md-select-on-focus="true"
+                    md-no-cache="false"
+                    md-delay="500"
+                    md-search-text="VM.searchText"
+                    md-selected-item-change="VM.onCategorySelected(category)"
+                    md-items="category in VM.getCategories(VM.searchText)"
+                    md-item-text="category.title"
+                    md-min-length="0"
+                    placeholder="Select category">
+                <md-item-template>
+                    <span ng-bind-html="category.label"></span>
+                </md-item-template>
+                <md-not-found>
+                    Nothing found
+                </md-not-found>
+            </md-autocomplete>
+
+            <md-chips ng-model="VM.Item.categories" readonly="true">
+                <md-chip-template>
+                    <strong>{{$chip.title[VM.defaultLang] || $chip.title}}</strong>
+                    <md-icon class="material-icons" ng-click="VM.removeCategory($chip)">close</md-icon>
+                </md-chip-template>
+
+            </md-chips>
+
+            <div style="height: 10px;"></div>
+
+            <div ng-if="VM.Item.id" >
+                <img ng-src="{{ VM.Item.thumb.copies.thumb.url }}" style="width: 100%;" />
+        <upload  ng-model="VM.Item.thumb"
+                 on-media-library-select="VM.onSelectFromMediaLibrary(item)"
+                       options="VM.thumbUploadOptions"></upload>
+
+                </div>
+
+
+
+
+
+            <tags ng-model="VM.Item.tagged"></tags>
+
+            <md-input-container  class="md-block" flex-gt-sm>
+                <label>Layout</label>
+                <md-select aria-label=Layout" placeholder="Layout"
+                           ng-model="VM.Item.settings.Layout.id" >
+                    <md-option value="">None</md-option>
+                    <md-option value="{{ item.varName }}" ng-repeat="item in VM.Layouts">{{ item.label }}</md-option>
+                </md-select>
+            </md-input-container>
+
+        </div><!-- END RIGHT -->
+    </div>
+</md-content>
