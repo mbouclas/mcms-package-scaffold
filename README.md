@@ -1,0 +1,1 @@
+### This is a scaffold to quickly create a package for mcms
